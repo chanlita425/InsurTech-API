@@ -10,6 +10,7 @@ import com.example.InsurTech.util.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
@@ -27,15 +28,19 @@ public class UserServiceImp implements UserService {
 
     // GET ALL
     @Override
-    public PageResponse<UserResponse> getUsers(int page, int size) {
+    public PageResponse<UserResponse> getUsers(int page, int size, String search,  String sortBy, String direction) {
 
-        Pageable pageable = PageRequest.of(page-1, size);
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
         Page<User> userPage =
-                userRepository.findByStatus(UserStatus.active, pageable);
+                userRepository.findByStatus(UserStatus.active, search, pageable );
 
         if (userPage.isEmpty()) {
-            throw new ResourceNotFoundException("No active users found");
+            throw new ResourceNotFoundException("User not found!");
         }
 
         List<UserResponse> users = userPage.getContent()

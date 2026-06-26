@@ -25,7 +25,20 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Query("SELECT u FROM User u WHERE u.status = 'active'")
     Page<User> findAllActiveUsers(UserStatus status, Pageable pageable);
 
-    Page<User> findByStatus(UserStatus status, Pageable pageable);
+    @Query("""
+        SELECT u FROM User u
+        WHERE u.status = :status
+        AND (
+            :search IS NULL OR :search = ''
+            OR LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))
+        )
+    """)
+    Page<User> findByStatus( @Param("status") UserStatus status,
+                             @Param("search") String search,
+                             Pageable pageable);
+
+    //search
 
 
 }

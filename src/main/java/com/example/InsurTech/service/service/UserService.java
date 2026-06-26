@@ -8,7 +8,7 @@ import com.example.InsurTech.util.PageResponse;
 
 public interface UserService {
 
-    PageResponse<UserResponse> getUsers(int page, int size);
+    PageResponse<UserResponse> getUsers(int page, int size, String search, String sortBy, String direction);
 
     UserResponse getUserById(Long id);
 

@@ -23,10 +23,13 @@ public class UserController {
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
     ) {
 
-        PageResponse<UserResponse> result = userService.getUsers(page, size);
+        PageResponse<UserResponse> result = userService.getUsers(page, size, search, sortBy, direction);
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
