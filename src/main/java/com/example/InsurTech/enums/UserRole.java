@@ -3,8 +3,8 @@ package com.example.InsurTech.enums;
 
 
 public enum UserRole {
-    ADMIN,
-    AGENT,
-    CUSTOMER,
-    STAFF
+    admin,
+    agent,
+    customer,
+    staff
 }

@@ -4,12 +4,18 @@ import com.example.InsurTech.enums.UserRole;
 import com.example.InsurTech.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 
 @Entity
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Table(name = "users")
 public class User extends BaseEntity {
 
@@ -30,6 +36,7 @@ public class User extends BaseEntity {
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserStatus status;
 
 }
