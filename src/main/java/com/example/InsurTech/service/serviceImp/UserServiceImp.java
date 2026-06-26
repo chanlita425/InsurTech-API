@@ -6,17 +6,16 @@ import com.example.InsurTech.dto.response.UserResponse;
 import com.example.InsurTech.enums.UserStatus;
 import com.example.InsurTech.repository.UserRepository;
 import com.example.InsurTech.service.service.UserService;
-import com.example.InsurTech.util.FilterUtil;
 import com.example.InsurTech.util.PageResponse;
-import com.example.InsurTech.util.entityFilter.Filter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.awt.print.Pageable;
+//import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.example.InsurTech.entity.User;
 
@@ -28,22 +27,29 @@ public class UserServiceImp implements UserService {
 
     // GET ALL
     @Override
-    public List<UserResponse> getAllUsers() {
+    public PageResponse<UserResponse> getUsers(int page, int size) {
 
-        List<User> users = userRepository.findAllActiveUsers();
+        Pageable pageable = PageRequest.of(page-1, size);
 
-        if (users.isEmpty()) {
+        Page<User> userPage =
+                userRepository.findByStatus(UserStatus.active, pageable);
+
+        if (userPage.isEmpty()) {
             throw new ResourceNotFoundException("No active users found");
         }
 
-        return users.stream()
+        List<UserResponse> users = userPage.getContent()
+                .stream()
                 .map(this::mapToResponse)
                 .toList();
+
+        return PageResponse.of(users, userPage);
     }
 
     // GET BY ID
     @Override
     public UserResponse getUserById(Long id) {
+
 
         User user = userRepository.findByIdAndStatus(id, UserStatus.active)
                 .orElseThrow(() ->

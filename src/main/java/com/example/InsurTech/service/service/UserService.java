@@ -3,13 +3,12 @@ package com.example.InsurTech.service.service;
 import com.example.InsurTech.dto.request.UserRequest;
 import com.example.InsurTech.dto.response.UserResponse;
 import com.example.InsurTech.util.PageResponse;
-import com.example.InsurTech.util.entityFilter.Filter;
 
-import java.util.List;
+
 
 public interface UserService {
 
-    List<UserResponse> getAllUsers();
+    PageResponse<UserResponse> getUsers(int page, int size);
 
     UserResponse getUserById(Long id);
 

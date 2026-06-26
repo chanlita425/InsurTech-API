@@ -4,6 +4,7 @@ import com.example.InsurTech.dto.request.UserRequest;
 import com.example.InsurTech.dto.response.UserResponse;
 import com.example.InsurTech.service.service.UserService;
 import com.example.InsurTech.util.ApiResponse;
+import com.example.InsurTech.util.PageResponse;
 import com.example.InsurTech.util.ResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +21,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAll() {
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
 
-        List<UserResponse> users = userService.getAllUsers();
+        PageResponse<UserResponse> result = userService.getUsers(page, size);
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
                         200,
                         "Users retrieved successfully",
-                        users
+                        result
                 )
         );
     }
