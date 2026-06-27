@@ -1,8 +1,10 @@
 package com.example.InsurTech.controller;
 
+import com.example.InsurTech.dto.request.LoginRequest;
 import com.example.InsurTech.dto.request.UserRequest;
 import com.example.InsurTech.dto.response.UserResponse;
 import com.example.InsurTech.service.service.UserService;
+import com.example.InsurTech.service.serviceImp.AuthService;
 import com.example.InsurTech.util.ApiResponse;
 import com.example.InsurTech.util.PageResponse;
 import com.example.InsurTech.util.ResponseBuilder;
@@ -19,14 +21,18 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
     ) {
 
-        PageResponse<UserResponse> result = userService.getUsers(page, size);
+        PageResponse<UserResponse> result = userService.getUsers(page, size, search, sortBy, direction);
 
         return ResponseEntity.ok(
                 ResponseBuilder.success(
@@ -99,4 +105,11 @@ public class UserController {
                 )
         );
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
+    }
+
 }
