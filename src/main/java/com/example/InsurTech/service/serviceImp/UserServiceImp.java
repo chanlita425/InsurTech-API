@@ -11,10 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
-//import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +25,7 @@ import com.example.InsurTech.entity.User;
 public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // GET ALL
     @Override
@@ -78,7 +79,9 @@ public class UserServiceImp implements UserService {
             User user = new User();
             user.setName(request.getName());
             user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
+
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+
             user.setRole(request.getRole());
             user.setStatus(UserStatus.active);
             user.setCreatedAt(LocalDateTime.now());
@@ -108,7 +111,7 @@ public class UserServiceImp implements UserService {
 
             user.setName(request.getName());
             user.setEmail(request.getEmail());
-            user.setPassword(request.getPassword());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             user.setUpdatedAt(LocalDateTime.now());
 
             userRepository.save(user);
